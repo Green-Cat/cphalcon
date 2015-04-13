@@ -20,6 +20,7 @@
 namespace Phalcon\Http;
 
 use Phalcon\DiInterface;
+use Phalcon\FilterInterface;
 use Phalcon\Http\RequestInterface;
 use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\Http\Request\Exception;
@@ -79,15 +80,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 	 *	//Returns value from $_REQUEST["user_email"] with sanitizing
 	 *	$userEmail = $request->get("user_email", "email");
 	 *</code>
-	 *
-	 * @param string name
-	 * @param string|array filters
-	 * @param mixed defaultValue
-	 * @param boolean notAllowEmpty
-	 * @param boolean noRecursive
-	 * @return mixed
 	 */
-	public function get(string! name = null, filters = null, defaultValue = null, notAllowEmpty = false, noRecursive = false)
+	public function get(string! name = null, var filters = null, var defaultValue = null, boolean notAllowEmpty = false, boolean noRecursive = false)
 	{
 		var request, value, filter, dependencyInjector;
 
@@ -101,13 +95,13 @@ class Request implements RequestInterface, InjectionAwareInterface
 						if typeof dependencyInjector != "object" {
 							throw new Exception("A dependency injection object is required to access the 'filter' service");
 						}
-						let filter = <\Phalcon\Filter> dependencyInjector->getShared("filter");
+						let filter = <FilterInterface> dependencyInjector->getShared("filter");
 						let this->_filter = filter;
 					}
 
 					let value = filter->sanitize(value, filters, noRecursive);
 
-					if (empty(value) && notAllowEmpty === true) || value === false {
+					if (empty value && notAllowEmpty === true) || value === false {
 						return defaultValue;
 					}
 
@@ -115,7 +109,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 				} else {
 
-				 	if (empty(value) && notAllowEmpty === true) {
+				 	if empty value && notAllowEmpty === true {
 				 		return defaultValue;
 				 	}
 
@@ -138,15 +132,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 	 *	//Returns value from $_POST["user_email"] with sanitizing
 	 *	$userEmail = $request->getPost("user_email", "email");
 	 *</code>
-	 *
-	 * @param string name
-	 * @param string|array filters
-	 * @param mixed defaultValue
-	 * @param boolean notAllowEmpty
-	 * @param boolean noRecursive
-	 * @return mixed
 	 */
-	public function getPost(string! name = null, filters = null, defaultValue = null, notAllowEmpty = false, noRecursive = false)
+	public function getPost(string! name = null, var filters = null, var defaultValue = null, boolean notAllowEmpty = false, boolean noRecursive = false)
 	{
 		var post, value, filter, dependencyInjector;
 
@@ -160,13 +147,13 @@ class Request implements RequestInterface, InjectionAwareInterface
 						if typeof dependencyInjector != "object" {
 							throw new Exception("A dependency injection object is required to access the 'filter' service");
 						}
-						let filter = <\Phalcon\Filter> dependencyInjector->getShared("filter");
+						let filter = <FilterInterface> dependencyInjector->getShared("filter");
 						let this->_filter = filter;
 					}
 
 					let value = filter->sanitize(value, filters, noRecursive);
 
-					if (empty(value) && notAllowEmpty === true) {
+					if empty(value) && notAllowEmpty === true {
 						return defaultValue;
 					}
 
@@ -195,15 +182,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 	 *	//Returns value from $_PUT["user_email"] with sanitizing
 	 *	$userEmail = $request->getPut("user_email", "email");
 	 *</code>
-	 *
-	 * @param string name
-	 * @param string|array filters
-	 * @param mixed defaultValue
-	 * @param boolean notAllowEmpty
-	 * @param boolean noRecursive
-	 * @return mixed
 	 */
-	public function getPut(string! name = null, filters = null, defaultValue = null, notAllowEmpty = false, noRecursive = false)
+	public function getPut(string! name = null, var filters = null, var defaultValue = null, boolean notAllowEmpty = false, boolean noRecursive = false)
 	{
 		var put, value, filter, dependencyInjector;
 
@@ -219,7 +199,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 						if typeof dependencyInjector != "object" {
 							throw new Exception("A dependency injection object is required to access the 'filter' service");
 						}
-						let filter = <\Phalcon\Filter> dependencyInjector->getShared("filter");
+						let filter = <FilterInterface> dependencyInjector->getShared("filter");
 						let this->_filter = filter;
 					}
 
@@ -258,15 +238,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 	 *	//Returns value from $_GET["id"] with a default value
 	 *	$id = $request->getQuery("id", null, 150);
 	 *</code>
-	 *
-	 * @param string name
-	 * @param string|array filters
-	 * @param mixed defaultValue
-	 * @param boolean notAllowEmpty
-	 * @param boolean noRecursive
-	 * @return mixed
 	 */
-	public function getQuery(string! name = null, filters = null, defaultValue = null, notAllowEmpty = false, noRecursive = false)
+	public function getQuery(string! name = null, var filters = null, var defaultValue = null, boolean notAllowEmpty = false, boolean noRecursive = false)
 	{
 		var get, value, filter, dependencyInjector;
 
@@ -280,7 +253,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 						if typeof dependencyInjector != "object" {
 							throw new Exception("A dependency injection object is required to access the 'filter' service");
 						}
-						let filter = <\Phalcon\Filter> dependencyInjector->getShared("filter");
+						let filter = <FilterInterface> dependencyInjector->getShared("filter");
 						let this->_filter = filter;
 					}
 
@@ -294,7 +267,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 				} else {
 
-					if (empty(value) && notAllowEmpty === true) {
+					if empty(value) && notAllowEmpty === true {
 						return defaultValue;
 					}
 
@@ -308,9 +281,6 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Gets variable from $_SERVER superglobal
-	 *
-	 * @param string name
-	 * @return mixed
 	 */
 	public function getServer(string! name)
 	{
@@ -365,10 +335,10 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 		if fetch value, _SERVER[name] {
 			return value;
-		} else {
-			if fetch value, _SERVER["HTTP_" . name] {
-				return value;
-			}
+		}
+
+		if fetch value, _SERVER["HTTP_" . name] {
+			return value;
 		}
 
 		return "";
@@ -451,11 +421,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Gets decoded JSON HTTP raw request body
-	 *
-	 * @param boolean associative
-	 * @return string
 	 */
-	public function getJsonRawBody(boolean associative = false)
+	public function getJsonRawBody(boolean associative = false) -> <\stdClass> | array | boolean
 	{
 		var rawBody;
 
@@ -617,9 +584,6 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Check if HTTP method match any of the passed methods
-	 *
-	 * @param string|array methods
-	 * @return boolean
 	 */
 	public function isMethod(var methods) -> boolean
 	{
@@ -650,7 +614,6 @@ class Request implements RequestInterface, InjectionAwareInterface
 	}
 
 	/**
-	 *
 	 * Checks whether HTTP method is GET. if _SERVER["REQUEST_METHOD"]==="GET"
 	 */
 	public function isGet() -> boolean
@@ -700,9 +663,6 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Checks whether request include attached files
-	 *
-	 * @param boolean onlySuccessful
-	 * @return boolean
 	 */
 	public function hasFiles(boolean onlySuccessful = false) -> long
 	{
@@ -733,7 +693,10 @@ class Request implements RequestInterface, InjectionAwareInterface
 		return numberFiles;
 	}
 
-	private function hasFileHelper(data, boolean onlySuccessful) -> long
+	/**
+	 * Recursively counts file in an array of files
+	 */
+	protected function hasFileHelper(var data, boolean onlySuccessful) -> long
 	{
 		var value;
 		int numberFiles = 0;
@@ -762,20 +725,19 @@ class Request implements RequestInterface, InjectionAwareInterface
 	 */
 	public function getUploadedFiles(boolean notErrored = false) -> <File[]>
 	{
-		var superFiles, prefix, input, smoothInput, files, file, dataFile;
+		var superFiles, prefix, input, smoothInput, file, dataFile;
+		array files = [];
 
 		let superFiles = _FILES;
 
-		let files = [];
-
-		if (count(superFiles) > 0) {
+		if count(superFiles) > 0 {
 
 			for prefix, input in superFiles {
-				if (typeof input["name"] == "array") {
+				if typeof input["name"] == "array" {
 					let smoothInput = this->smoothFiles(input["name"], input["type"], input["tmp_name"], input["size"], input["error"], prefix);
 
 					for file in smoothInput {
-						if (notErrored == false || file["error"] == UPLOAD_ERR_OK) {
+						if notErrored == false || file["error"] == UPLOAD_ERR_OK {
 							let dataFile = [
 								"name": file["name"],
 								"type": file["type"],
@@ -788,7 +750,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 						}
 					}
 				} else {
-					if (notErrored == false || input["error"] == UPLOAD_ERR_OK) {
+					if notErrored == false || input["error"] == UPLOAD_ERR_OK {
 						let files[] = new File(input, prefix);
 					}
 				}
@@ -799,7 +761,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 	}
 
 	/**
-	 * smooth out $_FILES to have plain array with all files uploaded
+	 * Smooth out $_FILES to have plain array with all files uploaded
 	 */
 	protected function smoothFiles(array! names, array! types, array! tmp_names, array! sizes, array! errors, string prefix) -> array
 	{
@@ -839,7 +801,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 	 */
 	public function getHeaders() -> array
 	{
-		var name, value, headers, contentHeaders;
+		var name, value, contentHeaders;
+		array headers;
 
 		let headers = [];
 		let contentHeaders = ["CONTENT_TYPE": true, "CONTENT_LENGTH": true];
@@ -849,7 +812,7 @@ class Request implements RequestInterface, InjectionAwareInterface
 				let name = ucwords(strtolower(str_replace("_", " ", substr(name, 5)))),
 					name = str_replace(" ", "-", name);
 				let headers[name] = value;
-			} elseif isset(contentHeaders[name]) {
+			} elseif isset contentHeaders[name] {
 				let name = ucwords(strtolower(str_replace("_", " ", name))),
 					name = str_replace(" ", "-", name);
 				let headers[name] = value;
@@ -904,12 +867,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Process a request header and return the one with best quality
-	 *
-	 * @param array qualityParts
-	 * @param string name
-	 * @return string
 	 */
-	protected function _getBestQuality(qualityParts, string! name) -> string
+	protected function _getBestQuality(array qualityParts, string! name) -> string
 	{
 		int i;
 		double quality, acceptQuality;
@@ -937,10 +896,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Gets content type which request has been made
-	 *
-	 * @return mixed
 	 */
-	public function getContentType()
+	public function getContentType() -> string | null
 	{
 		var contentType;
 
@@ -959,19 +916,15 @@ class Request implements RequestInterface, InjectionAwareInterface
 	}
 
 	/**
-	 * Gets array with mime/types and their quality accepted by the browser/client from _SERVER["HTTP_ACCEPT"]
-	 *
-	 * @return array
+	 * Gets an array with mime/types and their quality accepted by the browser/client from _SERVER["HTTP_ACCEPT"]
 	 */
-	public function getAcceptableContent()
+	public function getAcceptableContent() -> array
 	{
 		return this->_getQualityHeader("HTTP_ACCEPT", "accept");
 	}
 
 	/**
 	 * Gets best mime/type accepted by the browser/client from _SERVER["HTTP_ACCEPT"]
-	 *
-	 * @return string
 	 */
 	public function getBestAccept() -> string
 	{
@@ -979,9 +932,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 	}
 
 	/**
-	 * Gets charsets array and their quality accepted by the browser/client from _SERVER["HTTP_ACCEPT_CHARSET"]
+	 * Gets a charsets array and their quality accepted by the browser/client from _SERVER["HTTP_ACCEPT_CHARSET"]
 	 *
-	 * @return array
 	 */
 	public function getClientCharsets()
 	{
@@ -1015,10 +967,8 @@ class Request implements RequestInterface, InjectionAwareInterface
 
 	/**
 	 * Gets auth info accepted by the browser/client from $_SERVER['PHP_AUTH_USER']
-	 *
-	 * @return array
 	 */
-	public function getBasicAuth()
+	public function getBasicAuth() -> array | null
 	{
 		var auth;
 
