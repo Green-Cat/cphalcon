@@ -28,7 +28,19 @@ use Phalcon\Mvc\ModelInterface;
  */
 class Blameable extends Behavior implements BehaviorInterface
 {
-
+    protected _bahavior;
+    
+    protected _audit;
+    
+    protected _auditDetailClassName;
+    
+    public function __construct(string! bahaviorClass, string! auditClass, string! auditDetailClass)
+    {
+        let this->_bahavior = new {behaviorClass}();
+        let this->_audit = new {auditClass}();
+        let this->_auditDetailClassName = auditDetailClass;
+    }
+    
     /**
      * Listens for notifications from the models manager
      */
@@ -50,32 +62,28 @@ class Blameable extends Behavior implements BehaviorInterface
      */
     internal function createAudit(string! type, <ModelInterface> model) -> <Audit>
     {
-        var session, request, audit;
+        var session, request;
 
         //Get the session service
-        session = model->getDI()->getSession();
+        let session = model->getDI()->getSession();
 
         //Get the request service
-        request = model->getDI()->getRequest();
-
-        audit = new Audit();
+        let request = model->getDI()->getRequest();
 
         //Get the username from session
-        audit->user_name = session->get("userName");
+        let this->_audit->user_name = session->get("userName");
 
         //The model who performed the action
-        audit->model_name = get_class(model);
+        let this->_audit->model_name = get_class(model);
 
         //The client IP address
-        audit->ipaddress = request->getClientAddress();
+        let this->_audit->ipaddress = request->getClientAddress();
 
         //Action is an update
-        audit->type = type;
+        let this->_audit->type = type;
 
         //Current time
-        audit->created_at = date("Y-m-d H:i:s");
-
-        return audit;
+        let this->_audit->created_at = date("Y-m-d H:i:s");
     }
 
     /**
@@ -83,26 +91,26 @@ class Blameable extends Behavior implements BehaviorInterface
      */
     internal function auditAfterCreate(<ModelInterface> model) -> bool
     {
-        var audit, metaData, fields, field, auditDetail;
+        var metaData, fields, field, auditDetail;
         array details;
 
         //Create a new audit
-        audit    = this->createAudit("C", model);
-        metaData = model->getModelsMetaData();
-        fields   = $metaData->getAttributes($model);
+        this->createAudit("C", model);
+        let metaData = model->getModelsMetaData();
+        let fields   = metaData->getAttributes(model);
 
         foreach (fields as field) {
-            auditDetail = new AuditDetail();
-            auditDetail->field_name = field;
-            auditDetail->old_value = null;
-            auditDetail->new_value = model->readAttribute(field);
+            let auditDetail = new {this->_auditDetailClassName}();
+            let auditDetail->field_name = field;
+            let auditDetail->old_value = null;
+            let auditDetail->new_value = model->readAttribute(field);
 
-            details[] = auditDetail;
+            let details[] = auditDetail;
         }
 
-        audit->details = details;
+        let this->_audit->details = details;
 
-        return audit->save();
+        return this->_audit->save();
     }
 
     /**
@@ -110,32 +118,32 @@ class Blameable extends Behavior implements BehaviorInterface
      */
     internal function auditAfterUpdate(<ModelInterface> model) -> bool
     {
-        var changedFields, field, audit, originalData, auditDetail;
+        var changedFields, field, originalData, auditDetail;
         array details;
 
-        changedFields = model->getChangedFields();
+        let changedFields = model->getChangedFields();
 
         if (count(changedFields) == 0) {
             return null;
         }
 
         //Create a new audit
-        audit = this->createAudit("U", model);
+        this->createAudit("U", model);
 
         //Data the model had before modifications
-        originalData = model->getSnapshotData();
+        let originalData = model->getSnapshotData();
 
         foreach (changedFields as field) {
-            auditDetail = new AuditDetail();
-            auditDetail->field_name = field;
-            auditDetail->old_value = originalData[field];
-            auditDetail->new_value = model->readAttribute(field);
+            let auditDetail = new {this->_auditDetailClassName}();
+            let auditDetail->field_name = field;
+            let auditDetail->old_value = originalData[field];
+            let auditDetail->new_value = model->readAttribute(field);
 
-            details[] = auditDetail;
+            let details[] = auditDetail;
         }
 
-        audit->details = details;
+        let this->_audit->details = details;
 
-        return audit->save();
+        return this->_audit->save();
     }
 }
