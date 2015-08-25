@@ -28,7 +28,7 @@ class Subscribers extends \Phalcon\Mvc\Model
 			'value' => 'D'
 		)));
 
-		$this->addBehavior(new Blameable());
+		$this->addBehavior(new Blameable('Audit', 'AuditDetail'));
 
 		$this->keepSnapshots(true);
 	}
