@@ -34,9 +34,8 @@ class Blameable extends Behavior implements BehaviorInterface
     
     protected _auditDetailClassName;
     
-    public function __construct(string! bahaviorClass, string! auditClass, string! auditDetailClass)
+    public function __construct(string! auditClass, string! auditDetailClass)
     {
-        let this->_bahavior = new {behaviorClass}();
         let this->_audit = new {auditClass}();
         let this->_auditDetailClassName = auditDetailClass;
     }
